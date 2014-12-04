@@ -1,0 +1,115 @@
+package starwork.terran;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.TreeMap;
+
+import jnibwapi.model.Unit;
+import jnibwapi.types.UnitType.UnitType;
+import ai.core.XVR;
+import ai.handling.map.PositionInstance;
+import ai.handling.units.UnitCounter;
+import ai.managers.economy.TechnologyManager;
+import ai.utils.RUtilities;
+
+public class TerranSiegeTank {
+
+	private static XVR xvr = XVR.getInstance();
+	private static UnitType unitType = UnitType.Terran_Siege_Tank_Tank_Mode;
+	private static Unit medianTank = null;
+	private static Unit frontTank = null;
+
+	// =====================================================
+
+	public static void recalculateMedianAndFrontTanks() {
+		defineMedianTank();
+		defineFrontTank();
+	}
+
+	/**
+	 * Define tank that is nearest to enemy. Nearest in terms of longest
+	 * distance to the first base.
+	 */
+	private static void defineFrontTank() {
+		if (getNumberOfUnitsCompleted() == 0) {
+			frontTank = null;
+		} else {
+			Map<Unit, Double> distancesToBase = new TreeMap<>();
+			for (Unit tank : getAllCompletedTanks()) {
+				distancesToBase.put(tank, tank.distanceTo(SelectUnits.firstBase()));
+			}
+			distancesToBase = RUtilities.sortByValue(distancesToBase, false);
+
+			frontTank = (Unit) RUtilities.getFirstMapElement(distancesToBase);
+		}
+	}
+
+	/**
+	 * Define tank that subjectively located "in the middle of other tanks".
+	 * This way we can determine where the center of our Panzerdivision is.
+	 */
+	private static void defineMedianTank() {
+		if (getNumberOfUnitsCompleted() == 0) {
+			medianTank = null;
+		} else {
+			ArrayList<Integer> xCoordinates = new ArrayList<Integer>();
+			ArrayList<Integer> yCoordinates = new ArrayList<Integer>();
+			for (Unit tank : getAllCompletedTanks()) {
+				xCoordinates.add(tank.getX());
+				yCoordinates.add(tank.getY());
+			}
+			java.util.Collections.sort(xCoordinates);
+			java.util.Collections.sort(yCoordinates);
+
+			int middleIndex = xCoordinates.size() / 2;
+			PositionInstance medianPoint = new PositionInstance(xCoordinates.get(middleIndex),
+					yCoordinates.get(middleIndex));
+
+			medianTank = xvr.getUnitNearestFromList(medianPoint, getAllCompletedTanks());
+		}
+	}
+
+	public static Unit getMedianTank() {
+		return medianTank;
+	}
+
+	public static Unit getFrontTank() {
+		return frontTank;
+	}
+
+	// =====================================================
+
+	public static int getNumberOfUnits() {
+		return UnitCounter.getNumberOfUnits(UnitType.Terran_Siege_Tank_Siege_Mode)
+				+ UnitCounter.getNumberOfUnits(UnitType.Terran_Siege_Tank_Tank_Mode);
+	}
+
+	public static int getNumberOfUnitsCompleted() {
+		return UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Siege_Tank_Siege_Mode)
+				+ UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Siege_Tank_Tank_Mode);
+	}
+
+	public static boolean isSiegeModeResearched() {
+		return TechnologyManager.isSiegeModeResearched();
+	}
+
+	public static UnitType getUnitType() {
+		return unitType;
+	}
+
+	public static Collection<Unit> getAllCompletedTanks() {
+		ArrayList<Unit> all = new ArrayList<>();
+		for (Unit unit : xvr.getBwapi().getMyUnits()) {
+			if (unit.getType().isTank()) {
+				all.add(unit);
+			}
+		}
+		return all;
+	}
+
+	public static boolean hasAnyTank() {
+		return getNumberOfUnitsCompleted() > 0;
+	}
+
+}

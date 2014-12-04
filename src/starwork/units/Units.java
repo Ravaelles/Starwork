@@ -56,8 +56,9 @@ public class Units {
 	// =========================================================
 	// Special methods
 
-	public void shuffle() {
+	public Units shuffle() {
 		Collections.shuffle(units);
+		return this;
 	}
 
 	public Unit getRandom() {

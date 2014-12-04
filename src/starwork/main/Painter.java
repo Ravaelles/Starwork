@@ -1,6 +1,5 @@
 package starwork.main;
 
-import starwork.helpers.UnitHelper;
 import starwork.presidents.TimePresident;
 import starwork.units.SelectUnits;
 import starwork.utils.CodeProfiler;
@@ -96,7 +95,7 @@ public class Painter {
 		// paintDebugMessage(starwork, "Circling phase: ",
 		// ExplorerCirclingEnemyBase.get_circlingEnemyBasePhase());
 
-		// MapPoint nextBase = TerranCommandCenter.findTileForNextBase(false);
+		// Position nextBase = TerranCommandCenter.findTileForNextBase(false);
 		// if (nextBase != null) {
 		// paintDebugMessage(starwork, "Next base",
 		// "X: " + nextBase.getTx() + ", Y: " + nextBase.getTy());
@@ -112,7 +111,7 @@ public class Painter {
 		int oldMainMessageRowCounter = mainMessageRowCounter;
 		mainMessageRowCounter = 0;
 
-		// MapPoint assimilator = Constructing.findTileForAssimilator();
+		// Position assimilator = Constructing.findTileForAssimilator();
 		// if (assimilator != null) {
 		// starwork.getBwapi().drawBox(assimilator.getX(), assimilator.getY(),
 		// 3 * 32, 2 * 32, Color.Teal, false);
@@ -145,7 +144,7 @@ public class Painter {
 		// }
 
 		// // Draw next building place
-		// MapPoint buildTile = ProtossPylon.findTileNearPylonForNewBuilding();
+		// Position buildTile = ProtossPylon.findTileNearPylonForNewBuilding();
 		// if (buildTile != null) {
 		// starwork.getBwapi().drawCircle(buildTile.getX() - 64,
 		// buildTile.getX() - 48, 50, Color.Teal, false);
@@ -192,7 +191,7 @@ public class Painter {
 	private static final int timeConsumptionYInterval = 16;
 
 	private static void paintSpeculatedEnemyTanksPositions() {
-		// for (MapPointInstance enemyTank :
+		// for (PositionInstance enemyTank :
 		// EnemyTanksManager.getSpeculatedTankPositions()) {
 		//
 		// // Draw base position as rectangle
@@ -208,7 +207,7 @@ public class Painter {
 	}
 
 	private static void paintOffensivePoint(Starwork starwork) {
-		// MapPoint offensivePoint = TerranOffensiveBunker.getOffensivePoint();
+		// Position offensivePoint = TerranOffensiveBunker.getOffensivePoint();
 		// if (offensivePoint != null) {
 		//
 		// // Draw base position as rectangle
@@ -227,8 +226,7 @@ public class Painter {
 
 	private static void paintTimeConsumption(Starwork starwork) {
 		int counter = 0;
-		double maxValue = RUtilities.getMaxElement(CodeProfiler
-				.getAspectsTimeConsumption().values());
+		double maxValue = RUtilities.getMaxElement(CodeProfiler.getAspectsTimeConsumption().values());
 
 		// System.out.println();
 		// for (double val : TimeMeasurer.getAspectsTimeConsumption().values())
@@ -237,14 +235,11 @@ public class Painter {
 		// }
 
 		// System.out.println(TimeMeasurer.getAspectsTimeConsumption().keySet().size());
-		for (String aspectTitle : CodeProfiler.getAspectsTimeConsumption()
-				.keySet()) {
+		for (String aspectTitle : CodeProfiler.getAspectsTimeConsumption().keySet()) {
 			int x = timeConsumptionLeftOffset;
-			int y = timeConsumptionTopOffset + timeConsumptionYInterval
-					* counter++;
+			int y = timeConsumptionTopOffset + timeConsumptionYInterval * counter++;
 
-			int value = CodeProfiler.getAspectsTimeConsumption()
-					.get(aspectTitle).intValue();
+			int value = CodeProfiler.getAspectsTimeConsumption().get(aspectTitle).intValue();
 
 			// Draw aspect time consumption bar
 			int barWidth = (int) (timeConsumptionBarMaxWidth * value / maxValue);
@@ -256,10 +251,8 @@ public class Painter {
 			}
 			// System.out.println("   " + aspectTitle + " x:" + x + ", y:" + y +
 			// "  ## " + barWidth);
-			paintBox(x, y, x + barWidth, y + timeConsumptionBarHeight,
-					Color.White, true);
-			paintBox(x, y, x + timeConsumptionBarMaxWidth, y
-					+ timeConsumptionBarHeight, Color.Black, false);
+			paintBox(x, y, x + barWidth, y + timeConsumptionBarHeight, Color.White, true);
+			paintBox(x, y, x + timeConsumptionBarMaxWidth, y + timeConsumptionBarHeight, Color.Black, false);
 
 			// Draw aspect label
 			// Color.Yellow +
@@ -331,7 +324,7 @@ public class Painter {
 		// }
 		//
 		// if (NukeHandling.nuclearDetectionPoint != null) {
-		// MapPoint nuclearPoint = NukeHandling.nuclearDetectionPoint;
+		// Position nuclearPoint = NukeHandling.nuclearDetectionPoint;
 		// paintCircle(nuclearPoint.getX(), nuclearPoint.getY(), 20, Color.Red,
 		// false,
 		// false);
@@ -348,7 +341,7 @@ public class Painter {
 	}
 
 	private static void paintBuildingsToConstructPosition(Starwork starwork) {
-		// MapPoint buildingPlace;
+		// Position buildingPlace;
 		//
 		// // =========================================================
 		// // Paint next BASE position
@@ -383,7 +376,7 @@ public class Painter {
 		// // =========================================================
 		// // Paint next BUILDING position
 		// buildingPlace =
-		// Constructing.findTileForStandardBuilding(UnitTypes.Terran_Barracks);
+		// Constructing.findTileForStandardBuilding(UnitType.Terran_Barracks);
 		// if (buildingPlace != null) {
 		//
 		// // Draw base position as rectangle
@@ -402,7 +395,7 @@ public class Painter {
 		// // =========================================================
 		// // Paint next BUNKER position
 		// if (TerranBunker.getNumberOfUnits() == 0) {
-		// MapPoint building = null;
+		// Position building = null;
 		// building = TerranBunker.findTileForBunker();
 		// if (building != null) {
 		// starwork.getBwapi().drawBox(building.getX(), building.getY(),
@@ -442,7 +435,7 @@ public class Painter {
 
 		// Paint go to place for unit, if manually specified
 		// if (u.getPainterGoTo() != null) {
-		// MapPoint goTo = u.getPainterGoTo();
+		// Position goTo = u.getPainterGoTo();
 		// game.drawLine(u.getX(), u.getY(), goTo.getX(), goTo.getY(),
 		// Color.Grey, false);
 		// }
@@ -483,12 +476,9 @@ public class Painter {
 
 		// HEALED unit, draw Red Cross on white background
 		else if (unit.isBeingHealed()) {
-			paintBox(pos.getX() - 8, pos.getY() - 8, pos.getX() + 8,
-					pos.getY() + 8, Color.White, true);
-			paintBox(pos.getX() - 5, pos.getY() - 2, pos.getX() + 5,
-					pos.getY() + 2, Color.Red, true);
-			paintBox(pos.getX() - 2, pos.getY() - 5, pos.getX() + 2,
-					pos.getY() + 5, Color.Red, true);
+			paintBox(pos.getX() - 8, pos.getY() - 8, pos.getX() + 8, pos.getY() + 8, Color.White, true);
+			paintBox(pos.getX() - 5, pos.getY() - 2, pos.getX() + 5, pos.getY() + 2, Color.Red, true);
+			paintBox(pos.getX() - 2, pos.getY() - 5, pos.getX() + 2, pos.getY() + 5, Color.Red, true);
 		}
 
 		// IDLE unit, draw question mark
@@ -539,13 +529,12 @@ public class Painter {
 		Position pos = u.getPosition();
 
 		// Paint HEALTH for BUNKERS
-		if (UnitHelper.isDefensiveBuilding(u)) {
+		if (u.isDefensiveBuilding()) {
 			paintBuildingHealth(u);
 		}
 
 		// CONSTRUCTING: display building name
-		if (u.getType().isBuilding()
-				&& (u.isConstructing() || u.isBeingConstructed())) {
+		if (u.getType().isBuilding() && (u.isConstructing() || u.isBeingConstructed())) {
 			paintConstructionProgress(u);
 		}
 
@@ -603,25 +592,21 @@ public class Painter {
 		Unit trainedUnit = unit.getBuildUnit();
 		String trainedUnitString = "";
 		if (trainedUnit != null) {
-			operationProgress = UnitHelper.getHP(unit) * 100
-					/ UnitHelper.getMaxHP(trainedUnit);
-			trainedUnitString = UnitHelper.getNameShort(trainedUnit);
+			operationProgress = unit.getHP() * 100 / trainedUnit.getMaxHP();
+			trainedUnitString = trainedUnit.getNameShort();
 		}
 
 		// Paint box
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth
-				* operationProgress / 100, labelTop + labelHeight, Color.White,
-				true);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth * operationProgress / 100, labelTop + labelHeight,
+				Color.White, true);
 
 		// Paint box borders
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop
-				+ labelHeight, Color.Black, false);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop + labelHeight, Color.Black, false);
 
 		// =========================================================
 		// Display label
 
-		paintTextMap(unit, -4 * trainedUnitString.length(), 16,
-				getToStringHex(Color.White) + trainedUnitString);
+		paintTextMap(unit, -4 * trainedUnitString.length(), 16, getToStringHex(Color.White) + trainedUnitString);
 	}
 
 	private static void paintBuildingHealth(Unit unit) {
@@ -630,8 +615,7 @@ public class Painter {
 		int labelLeft = unit.getPosition().getX() - labelMaxWidth / 2;
 		int labelTop = unit.getPosition().getY() + 13;
 
-		double hpRatio = (double) UnitHelper.getHP(unit)
-				/ UnitHelper.getMaxHP(unit);
+		double hpRatio = (double) unit.getHP() / unit.getMaxHP();
 		int hpProgress = (int) (1 + 99 * hpRatio);
 
 		Color color = Color.Green;
@@ -643,12 +627,10 @@ public class Painter {
 		}
 
 		// Paint box
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth * hpProgress
-				/ 100, labelTop + labelHeight, color, true);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth * hpProgress / 100, labelTop + labelHeight, color, true);
 
 		// Paint box borders
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop
-				+ labelHeight, Color.Black, false);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop + labelHeight, Color.Black, false);
 
 		// if (unit.getType().isBunker()) {
 		//
@@ -663,8 +645,7 @@ public class Painter {
 		int labelLeft = unit.getPosition().getX() - labelMaxWidth / 2;
 		int labelTop = unit.getPosition().getY() + 13;
 
-		double progress = (double) UnitHelper.getHP(unit)
-				/ UnitHelper.getMaxHP(unit);
+		double progress = (double) unit.getHP() / unit.getMaxHP();
 		int labelProgress = (int) (1 + 99 * progress);
 		// String color = RUtilities.assignStringForValue(
 		// progress,
@@ -676,20 +657,17 @@ public class Painter {
 		stringToDisplay = labelProgress + "%";
 
 		// Paint box
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth * labelProgress
-				/ 100, labelTop + labelHeight, Color.Blue, true);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth * labelProgress / 100, labelTop + labelHeight,
+				Color.Blue, true);
 
 		// Paint box borders
-		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop
-				+ labelHeight, Color.Black, false);
+		paintBox(labelLeft, labelTop, labelLeft + labelMaxWidth, labelTop + labelHeight, Color.Black, false);
 
 		// Paint label
-		paintTextMap(labelLeft + labelMaxWidth / 2 - 8, labelTop - 3,
-				stringToDisplay);
+		paintTextMap(labelLeft + labelMaxWidth / 2 - 8, labelTop - 3, stringToDisplay);
 
 		// Display name of unit
-		String name = (unit.getBuildUnit().getType().c_str() + "").replace(
-				"Terran_", "");
+		String name = (unit.getBuildUnit().getType().c_str() + "").replace("Terran_", "");
 		paintTextMap(unit, -25, -4, name);
 	}
 
@@ -699,7 +677,7 @@ public class Painter {
 			return;
 		}
 
-		int time = TimePresident.getFrameCounter();
+		int time = TimePresident.getTimeFrames();
 		paintMainMessage(starwork, "Time: " + (time / 30) + "s"); // (" + time + ")"
 		paintMainMessage(starwork, "Killed: " + enemyDeaths);
 		paintMainMessage(starwork, "Lost: " + ourDeaths);
@@ -713,8 +691,7 @@ public class Painter {
 
 		if (FULL_DEBUG) {
 			paintMainMessage(starwork, "--------------------");
-			paintMainMessage(starwork, "Enemy: "
-					+ starwork.getEnemy().getRace().c_str());
+			paintMainMessage(starwork, "Enemy: " + starwork.getEnemy().getRace().c_str());
 			// paintMainMessage(starwork, "HQs: " +
 			// UnitCounter.getNumberOfUnitsCompleted(UnitManager.BASE));
 
@@ -724,22 +701,22 @@ public class Painter {
 			// UnitCounter.getNumberOfUnitsCompleted(UnitManager.BASE));
 			//
 			// if
-			// (UnitCounter.getNumberOfUnitsCompleted(UnitTypes.Terran_Bunker) >
+			// (UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Bunker) >
 			// 0)
 			// paintMainMessage(
 			// starwork,
 			// "Bunkers: "
 			// +
-			// UnitCounter.getNumberOfUnitsCompleted(UnitTypes.Terran_Bunker));
+			// UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Bunker));
 			//
 			// if
-			// (UnitCounter.getNumberOfUnitsCompleted(UnitTypes.Terran_Factory)
+			// (UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Factory)
 			// > 0)
 			// paintMainMessage(
 			// starwork,
 			// "Factories: "
 			// +
-			// UnitCounter.getNumberOfUnitsCompleted(UnitTypes.Terran_Factory));
+			// UnitCounter.getNumberOfUnitsCompleted(UnitType.Terran_Factory));
 			//
 			// paintMainMessage(starwork, "--------------------");
 			//
@@ -758,19 +735,19 @@ public class Painter {
 			// TerranCommandCenter.getNumberOfGasGatherersForBase(starwork.getFirstBase())
 			// + ")");
 			//
-			// UnitTypes type;
+			// UnitType type;
 			//
-			// // type = UnitTypes.Terran_Marine;
+			// // type = UnitType.Terran_Marine;
 			// // if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// // paintMainMessage(starwork, "Marines: " +
 			// // UnitCounter.getNumberOfUnitsCompleted(type));
 			// //
-			// // type = UnitTypes.Terran_Medic;
+			// // type = UnitType.Terran_Medic;
 			// // if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// // paintMainMessage(starwork, "Medics: " +
 			// // UnitCounter.getNumberOfUnitsCompleted(type));
 			// //
-			// // type = UnitTypes.Terran_Firebat;
+			// // type = UnitType.Terran_Firebat;
 			// // if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// // paintMainMessage(starwork, "Firebats: " +
 			// // UnitCounter.getNumberOfUnitsCompleted(type));
@@ -779,17 +756,17 @@ public class Painter {
 			// if (infantry > 0)
 			// paintMainMessage(starwork, "Infantry: " + infantry);
 			//
-			// type = UnitTypes.Terran_Vulture;
+			// type = UnitType.Terran_Vulture;
 			// if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// paintMainMessage(starwork, "Vultures: " +
 			// UnitCounter.getNumberOfUnitsCompleted(type));
 			//
-			// type = UnitTypes.Terran_Goliath;
+			// type = UnitType.Terran_Goliath;
 			// if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// paintMainMessage(starwork, "Goliaths: " +
 			// UnitCounter.getNumberOfUnitsCompleted(type));
 			//
-			// type = UnitTypes.Terran_Siege_Tank_Siege_Mode;
+			// type = UnitType.Terran_Siege_Tank_Siege_Mode;
 			// if (UnitCounter.getNumberOfUnitsCompleted(type) > 0)
 			// paintMainMessage(starwork, "Tanks: " +
 			// UnitCounter.getNumberOfUnitsCompleted(type));
@@ -827,11 +804,11 @@ public class Painter {
 			// paintMainMessage(starwork, "--------------------");
 		}
 
-		if (TimePresident.getFrameCounter() % 10 == 0) {
+		if (TimePresident.getTimeFrames() % 10 == 0) {
 
 		}
 
-		// for (UnitTypes type :
+		// for (UnitType type :
 		// ShouldBuildCache.getBuildingsThatShouldBeBuild()) {
 		// paintMainMessage(starwork,
 		// "-> "
@@ -848,10 +825,8 @@ public class Painter {
 
 	// =========================================================
 
-	public static void message(Starwork starwork, String txt,
-			boolean displayCounter) {
-		game.sendText((displayCounter ? ("(" + messageCounter++ + ".) ") : "")
-				+ txt);
+	public static void message(Starwork starwork, String txt, boolean displayCounter) {
+		game.sendText((displayCounter ? ("(" + messageCounter++ + ".) ") : "") + txt);
 		// game.((displayCounter ? ("(" + messageCounter++ + ".) ") : "") +
 		// txt);
 	}
@@ -860,8 +835,8 @@ public class Painter {
 		message(starwork, txt, true);
 	}
 
-	// public static void messageBuild(Starwork starwork, UnitTypes type) {
-	// String building = "#" + UnitType.getUnitTypesByID(type.ordinal()).name();
+	// public static void messageBuild(Starwork starwork, UnitType type) {
+	// String building = "#" + UnitType.getUnitTypeByID(type.ordinal()).name();
 	//
 	// message(starwork, "Trying to build " + building);
 	// }
@@ -871,8 +846,7 @@ public class Painter {
 		Painter.errorOcurredDetails = errorString;
 	}
 
-	private static void paintDebugMessage(Starwork starwork, String message,
-			Object value) {
+	private static void paintDebugMessage(Starwork starwork, String message, Object value) {
 		String valueString = "ERROR";
 		if (value instanceof Boolean) {
 			if (((boolean) value) == true) {
@@ -886,8 +860,7 @@ public class Painter {
 
 		message += ": " + valueString;
 
-		starwork.getGame().drawText(2, 318 - message.length() * 3,
-				3 + 10 * debugMessageCounter++, message);
+		starwork.getGame().drawText(2, 318 - message.length() * 3, 3 + 10 * debugMessageCounter++, message);
 	}
 
 	// =========================================================
@@ -897,13 +870,11 @@ public class Painter {
 	}
 
 	private static void paintTextMap(Unit unit, String message) {
-		starwork.getGame().drawTextScreen(unit.getPosition().getX(),
-				unit.getPosition().getY(), message);
+		starwork.getGame().drawTextScreen(unit.getPosition().getX(), unit.getPosition().getY(), message);
 	}
 
 	private static void paintTextMap(Unit unit, int dx, int dy, String message) {
-		starwork.getGame().drawTextScreen(unit.getPosition().getX() + dx,
-				unit.getPosition().getY() + dy, message);
+		starwork.getGame().drawTextScreen(unit.getPosition().getX() + dx, unit.getPosition().getY() + dy, message);
 	}
 
 	private static void paintTextMap(int x, int y, String message) {
@@ -916,13 +887,11 @@ public class Painter {
 	// message);
 	// }
 
-	private static void paintCircle(int x, int y, int radius, Color color,
-			boolean fill) {
+	private static void paintCircle(int x, int y, int radius, Color color, boolean fill) {
 		starwork.getGame().drawCircleMap(x, y, radius, color, fill);
 	}
 
-	private static void paintBox(int x, int y, int width, int height,
-			Color color, boolean fill) {
+	private static void paintBox(int x, int y, int width, int height, Color color, boolean fill) {
 		int ctype = 2;
 		starwork.getGame().drawBoxMap(x, y, width, height, color, fill);
 	}

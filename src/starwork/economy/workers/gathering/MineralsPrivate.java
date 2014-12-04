@@ -27,7 +27,7 @@ public class MineralsPrivate {
 		}
 
 		// Get workers
-		Units workersNearby = SelectUnits.ourWorkers().maxDistTo(base, 15).units();
+		Units workersNearby = SelectUnits.ourWorkers().inRadius(base, 15).units();
 		
 		ObjectAmount<Unit> mineralsToNumberOfWorkers = new ObjectAmount<Unit>();
 		for (Unit mineral : minerals.list()) {
@@ -83,7 +83,7 @@ public class MineralsPrivate {
 	}
 
 	private static Units getMineralsNear(Unit unit, int maxDistance) {
-		return SelectUnits.minerals().maxDistTo(unit, maxDistance).units();
+		return SelectUnits.minerals().inRadius(unit, maxDistance).units();
 	}
 
 	private static int calculateHowManyWorkersGather(Unit mineral, Units workersNeaby) {

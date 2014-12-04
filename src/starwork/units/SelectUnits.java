@@ -2,16 +2,14 @@ package starwork.units;
 
 import java.util.Collection;
 
-import starwork.helpers.PositionHelper;
+import starwork.helpers.UnitHelper;
 import starwork.main.Starwork;
+import starwork.map.AbstractPosition;
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 
 public class SelectUnits {
-
-	public static UnitType OUR_BASE = UnitType.Terran_Command_Center;
-	public static UnitType OUR_WORKER = UnitType.Terran_SCV;
 
 	// =====================================================================
 	// Basic functionality for object
@@ -54,7 +52,11 @@ public class SelectUnits {
 	public static SelectUnits our() {
 		Units units = new Units();
 
-		units.addUnits(Starwork.getSelf().getUnits());
+		for (Unit unit : Starwork.getSelf().getUnits()) {
+			if (unit.isAlive()) {
+				units.addUnit(unit);
+			}
+		}
 
 		return new SelectUnits(units);
 	}
@@ -62,7 +64,11 @@ public class SelectUnits {
 	public static SelectUnits enemy() {
 		Units units = new Units();
 
-		units.addUnits(Starwork.getEnemy().getUnits());
+		for (Unit unit : Starwork.getEnemy().getUnits()) {
+			if (unit.isAlive()) {
+				units.addUnit(unit);
+			}
+		}
 
 		return new SelectUnits(units);
 	}
@@ -84,13 +90,26 @@ public class SelectUnits {
 		return selectUnits.ofType(UnitType.Resource_Mineral_Field);
 	}
 
-	public static SelectUnits all() {
-		Units units = new Units();
-
-		units.addUnits(Starwork.getSelf().getUnits());
-
-		return new SelectUnits(units);
+	public static SelectUnits from(Units units) {
+		SelectUnits selectUnits = new SelectUnits(units);
+		return selectUnits;
 	}
+
+	public static SelectUnits from(Collection<Unit> unitsCollection) {
+		Units units = new Units();
+		units.addUnits(unitsCollection);
+
+		SelectUnits selectUnits = new SelectUnits(units);
+		return selectUnits;
+	}
+
+	// public static SelectUnits all() {
+	// Units units = new Units();
+	//
+	// units.addUnits(Starwork.getSelf().getUnits());
+	//
+	// return new SelectUnits(units);
+	// }
 
 	// =========================================================
 	// Get results
@@ -99,12 +118,26 @@ public class SelectUnits {
 		return units;
 	}
 
+	public Collection<Unit> list() {
+		return units().list();
+	}
+
 	// =====================================================================
 	// Filter units
 
 	public SelectUnits ofType(UnitType type) {
 		for (Unit unit : units.list()) {
 			if (unit.getType() != type) {
+				filterOut(unit);
+			}
+		}
+
+		return this;
+	}
+
+	public SelectUnits ofType(UnitType type1Allowed, UnitType type2Allowed) {
+		for (Unit unit : units.list()) {
+			if (unit.getType() != type1Allowed && unit.getType() != type2Allowed) {
 				filterOut(unit);
 			}
 		}
@@ -135,11 +168,11 @@ public class SelectUnits {
 	// Hi-level methods
 
 	public static SelectUnits ourBases() {
-		return our().ofType(OUR_BASE);
+		return our().ofType(UnitHelper.TYPE_BASE);
 	}
 
 	public static SelectUnits ourWorkers() {
-		return our().ofType(OUR_WORKER);
+		return our().ofType(UnitHelper.TYPE_WORKER);
 	}
 
 	// =========================================================
@@ -155,11 +188,9 @@ public class SelectUnits {
 		return units.first();
 	}
 
-	public SelectUnits maxDistTo(Unit otherUnit, double maxDist) {
+	public SelectUnits inRadius(double maxDist, AbstractPosition position) {
 		for (Unit unit : units.list()) {
-			// System.out.println("DIST = " +
-			// PositionHelper.distanceBetween(unit, otherUnit));
-			if (PositionHelper.getDistanceBetween(unit, otherUnit) > maxDist) {
+			if (position.distanceTo(unit) > maxDist) {
 				filterOut(unit);
 			}
 		}
@@ -167,7 +198,7 @@ public class SelectUnits {
 		return this;
 	}
 
-	public Unit firstBase() {
+	public static Unit firstBase() {
 		Units bases = ourBases().units();
 		return bases.isEmpty() ? null : bases.first();
 	}

@@ -50,6 +50,11 @@ public class Starwork extends DefaultBWListener {
 	}
 
 	@Override
+	public void onUnitComplete(Unit unit) {
+		// System.out.println("New unit " + unit.getType());
+	}
+
+	@Override
 	public void onUnitDestroy(Unit unit) {
 		super.onUnitDestroy(unit);
 		UnitsKnowledge.unitDestroyed(unit);

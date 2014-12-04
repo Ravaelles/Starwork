@@ -2,7 +2,6 @@ package starwork.units;
 
 import java.util.ArrayList;
 
-import starwork.helpers.UnitHelper;
 import bwapi.Unit;
 
 public class UnitsKnowledge {
@@ -15,7 +14,7 @@ public class UnitsKnowledge {
 	// =========================================================
 
 	public static boolean isUnitAlive(Unit unit) {
-		if (UnitHelper.isPlayerUnit(unit)) {
+		if (unit.isPlayerUnit()) {
 			return !ourUnitsDestroyed.contains(unit);
 		} else {
 			return !enemyUnitsDestroyed.contains(unit);
@@ -23,7 +22,7 @@ public class UnitsKnowledge {
 	}
 
 	public static boolean unitDestroyed(Unit unit) {
-		if (UnitHelper.isPlayerUnit(unit)) {
+		if (unit.isPlayerUnit()) {
 			return ourUnitsDestroyed.contains(unit);
 		} else {
 			return enemyUnitsDestroyed.contains(unit);
